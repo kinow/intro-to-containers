@@ -23,38 +23,12 @@ slides-venue: 'BSC-CES - MWT'
 
 # Intro to Containers
 
-<slot name="header" title="HOLA">
-</slot>
-
-Intro, Basics, Best Practices
-
-<div class="pt-12">
-  <span @click="$slidev.nav.next" class="px-2 py-1 rounded cursor-pointer" hover="bg-white bg-opacity-10">
-    Press Space (or right arrow) for next page <carbon:arrow-right class="inline"/>
-  </span>
-</div>
-
-<div class="abs-br m-6 flex gap-2">
-  <button @click="$slidev.nav.openInEditor()" title="Open in Editor" class="text-xl slidev-icon-btn opacity-50 !border-none !hover:text-white">
-    <carbon:edit />
-  </button>
-  <a href="https://github.com/kinow" target="_blank" alt="GitHub"
-    class="text-xl slidev-icon-btn opacity-50 !border-none !hover:text-white">
-    <carbon-logo-github />
-  </a>
-</div>
-
-<!--
-The last comment block of each slide will be treated as slide notes. It will be visible and editable in Presenter Mode along with the slide. [Read more in the docs](https://sli.dev/guide/syntax.html#notes)
--->
-
 ---
-transition: fade-out
 layout: bsc-default
 hideInToc: true
 ---
 
-<div class="center">
+<div class="center1">
 
 # Bruno P. Kinoshita
 
@@ -78,26 +52,33 @@ hideInToc: true
 <Toc :maxDepth="2" />
 
 ---
+layout: bsc-intro
+hideInToc: true
+---
+
+# Containerization
+
+---
 layout: bsc-default
 ---
 
 ## Prerequisites
 
-If you would like to try the examples in these slides, you will need:
+If you would like to try the examples in these slides, you will need to:
 
 <br/>
 
-- [To Install Docker](https://docs.docker.com/engine/install/ubuntu/)
-- To be able to run `docker run hello-world`
+- [Install Docker](https://docs.docker.com/engine/install/ubuntu/)
+- Be able to run `docker run hello-world`
 - Have Singularity (CE > 3.7) installed (optional)
-- Docker and Singularity compose tools (optional)
-- ~10 GB at least to spare, as well as good Internet connectivity.
+- Have Docker and Singularity compose tools (optional)
+- Have ~10 GB at least to spare, as well as good Internet connectivity.
 
 <br/>
 
-The example code may take several minutes to complete, so if you are attending
-a session of this presentation, try running `docker pull image_name:version`
-before the presentation begins.
+> NOTE: The example code snippets in this presentation may take several minutes to complete.
+> If you are attending a session of this presentation, try running `docker pull
+> image_name:version` before the presentation begins.
 
 ---
 layout: bsc-default
@@ -113,7 +94,7 @@ This talk is about **containerization at OS level**, more specifically about con
 
 ![](/images/containers-vms.png) [^1]
 
-[^1]: [The Difference Between Virtual Machines and Containers](https://www.trendmicro.com/zh_hk/devops/22/e/the-difference-between-virtual-machines-and-containers.html)
+[^1]: [Trend Micro (2022). The Difference Between Virtual Machines and Containers](https://www.trendmicro.com/zh_hk/devops/22/e/the-difference-between-virtual-machines-and-containers.html)
 
 ---
 layout: bsc-default
@@ -126,14 +107,15 @@ Containers are based on features of Kernel that have been available for
 quite some years (`chroot`, and Linux namespaces such as `cgroups`).
 
 Containers did not start with Docker, but Docker was responsible for
-its widespread use in software development.
+its recent widespread use in software development.
 
 <!-- Namespaces are a feature of the Linux kernel that partitions kernel
 resources such that one set of processes sees one set of resources while
 another set of processes sees a different set of resources. -->
 
-<div style="font-size: 0.9rem;">
-<v-click>
+Refs: [^1][^2][^3]
+
+<div style="font-size: 0.8rem;">
 
 - 1997: Unix V7 adds `chroot`
 - 2000: FreeBSD jails
@@ -149,19 +131,17 @@ another set of processes sees a different set of resources. -->
 - 2018: Podman (daemonless, OS, uses OCI containers and images - compatible with Docker)
 - 2019: Spack added the `spack containerize` command (#14202)
 
-</v-click>
 </div>
 
-<!-- Refs:
-  - https://blog.aquasec.com/a-brief-history-of-containers-from-1970s-chroot-to-docker-2016
-  - https://en.wikipedia.org/wiki/Linux_namespaces
-  - https://github.com/opencontainers/runc
--->
 
 <!--
   - The first hypervisor providing full virtualization appeared in January 1967 - IBM
     https://en.wikipedia.org/wiki/Hypervisor#Mainframe_origins
 -->
+
+[^1]: https://blog.aquasec.com/a-brief-history-of-containers-from-1970s-chroot-to-docker-2016
+[^2]:  https://en.wikipedia.org/wiki/Linux_namespaces
+[^3]:  https://github.com/opencontainers/runc
 
 ---
 layout: bsc-default
@@ -207,6 +187,7 @@ Refs: [^1][^2] (networking plays an important role, valid for cloud, HPC may hav
 ---
 layout: bsc-intro
 level: 2
+hideInToc: true
 ---
 
 # Demo (follow along!)
@@ -240,14 +221,16 @@ Type "help", "copyright", "credits" or "license" for more information.
 $ docker run -ti python:2.7.18-alpine3.11 /bin/ash
 / # 
 
-# Execute some Python 2 code
-$ docker run -ti python:2.7.18-alpine3.11 python2 -c 'print "Hello"'
-Hello
+# Execute some Python 2 code with an environment variable
+$ docker run -ti -e WORLD=Earth python:2.7.18-alpine3.11 python2 -c \
+  'import os; print "Hello " + os.environ["WORLD"]'
+Hello Earth
 ```
 
 ---
 layout: bsc-default
 level: 2
+hideInToc: true
 ---
 
 # Running Docker containers with the command-line
@@ -287,6 +270,7 @@ hideInToc: true
 ```bash
 # View all the images you have downloaded
 $ docker image ls
+...
 
 # Remove the containers you have created
 $ docker container prune -f
@@ -300,10 +284,12 @@ Total reclaimed space: 587.6kB
 
 # See everything you have running
 $ docker ps -a
+...
 
 # Or volumes or networks
 $ docker network list
 $ docker volume list
+...
 ```
 
 ---
@@ -346,23 +332,17 @@ hideInToc: true
 # More useful commands
 
 ```bash
-# Or do what I do from time to time
-$ docker system prune -a -f
-...
-Total reclaimed space: 3.189GB
-```
-
-```bash
 # Run a container that will auto-delete itself when its process exists
 $ docker run --rm python:2.7.18-alpine3.11
 
-# Run a container as a daemon (in the background)
-$ docker run -d python python:2.7.18-alpine3.11
+# Run a container with a name, as a daemon (in the background)
+$ docker run -d --rm --name python2test python:2.7.18-alpine3.11
+27909a75647fbd8bb700fcdc2e25019958a8d0ecda74227a1f74793e8caf4cab
 ...
 Total reclaimed space: 3.189GB
+
 ```
-docker run -d --rm --name python2test python:2.7.18-alpine3.11
-27909a75647fbd8bb700fcdc2e25019958a8d0ecda74227a1f74793e8caf4cab
+
 ---
 layout: bsc-default
 level: 2

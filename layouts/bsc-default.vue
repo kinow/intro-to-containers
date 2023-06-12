@@ -17,13 +17,27 @@
   display: block;
 }
 
-.center {
+.center1 {
   min-height: 100%;
   display: flex;
   flex-wrap: wrap;
   align-content: center;
+  flex-direction: row;
 }
-.center + * {
+.center1 > * {
+  display: flex;
+  flex-direction: column;
+  flex-basis: 100%;
+}
+
+.center2 {
+  min-height: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  align-content: center;
+  flex-direction: row;
+}
+.center2 + * {
   display: flex;
   flex-direction: column;
   flex-basis: 100%;
