@@ -76,7 +76,7 @@ If you would like to try the examples in these slides, you will need to:
 
 <br/>
 
-> NOTE: The example code snippets in this presentation may take several minutes to complete.
+> ※ NOTE: The example code snippets in this presentation may take several minutes to complete.
 > If you are attending a session of this presentation, try running `docker pull
 > image_name:version` before the presentation begins.
 
@@ -348,40 +348,135 @@ layout: bsc-default
 level: 2
 ---
 
-# Using a Dockerfile
+# Creating images with Dockerfile
+
+*File: Dockerfile*
 
 ```dockerfile
-FROM node:18-alpine
+FROM python:2.7.18-alpine3.11
 WORKDIR /app
-COPY . .
-RUN yarn install --production
-CMD ["node", "src/index.js"]
+
+COPY hello.txt .
+
+RUN cat <<EOF > script.py
+#!/usr/bin/python2
+
+with open('hello.txt') as f:
+  msg = f.read()
+  print(msg)
+  with open('/tmp/output.txt', 'w+') as o:
+    o.write(msg)
+    o.flush()
+
+EOF
+
+CMD ["python2", "script.py"]
 ```
 
 `RUN`, `ADD`, and `COPY` create new layers. Layers are cached for
-performance. Other commands create temporary layers that are discarded
-after the container is built.
-
----
-layout: bsc-default
-level: 3
----
-
-# Multi-stage builds
+performance.
 
 ---
 layout: bsc-default
 level: 2
+hideInToc: true
 ---
 
-# Creating a Singularity container
+# Creating images with Dockerfile
+
+```bash
+$ echo "Hello World" > hello.txt
+# The dot at the end is for the local dir, where Dockerfile is
+$ docker build -t test-python:latest .
+[+] Building 0.7s (9/9) FINISHED                                                
+ => [internal] load .dockerignore                                          0.0s
+ => => transferring context: 2B                                            0.0s
+ => [internal] load build definition from Dockerfile                       0.0s
+ => => transferring dockerfile: 231B                                       0.0s
+ => [internal] load metadata for docker.io/library/python:2.7.18-alpine3.  0.0s
+ => CACHED [1/4] FROM docker.io/library/python:2.7.18-alpine3.11           0.0s
+ => [internal] load build context                                          0.0s
+ => => transferring context: 48B                                           0.0s
+ => [2/4] WORKDIR /app                                                     0.2s
+ => [3/4] COPY hello.txt .                                                 0.0s
+ => [4/4] RUN cat <<EOF > script.py                                        0.3s
+ => exporting to image                                                     0.1s
+ => => exporting layers                                                    0.1s
+ => => writing image sha256:de797699e542f0fd08cd4321d434754334df8399d5b3c  0.0s
+ => => naming to docker.io/library/test-python:latest                      0.0s
+```
 
 ---
 layout: bsc-default
 level: 2
+hideInToc: true
 ---
 
-# Testing on the HPC
+# Creating images with Dockerfile
+
+What if you run that command again?
+
+Look at the lines that contain `CACHED`!
+
+```bash
+$ docker build -t test-python:latest .
+[+] Building 0.1s (9/9) FINISHED                                                
+=> [internal] load build definition from Dockerfile                       0.0s
+=> => transferring dockerfile: 231B                                       0.0s
+=> [internal] load .dockerignore                                          0.0s
+=> => transferring context: 2B                                            0.0s
+=> [internal] load metadata for docker.io/library/python:2.7.18-alpine3.  0.0s
+=> [1/4] FROM docker.io/library/python:2.7.18-alpine3.11                  0.0s
+=> [internal] load build context                                          0.0s
+=> => transferring context: 30B                                           0.0s
+=> CACHED [2/4] WORKDIR /app                                              0.0s
+=> CACHED [3/4] COPY hello.txt .                                          0.0s
+=> CACHED [4/4] RUN cat <<EOF > script.py                                 0.0s
+=> exporting to image                                                     0.0s
+=> => exporting layers                                                    0.0s
+=> => writing image sha256:de797699e542f0fd08cd4321d434754334df8399d5b3c  0.0s
+=> => naming to docker.io/library/test-python:latest                      0.0s
+```
+
+---
+layout: bsc-default
+level: 2
+hideInToc: true
+---
+
+# Creating images with Dockerfile
+
+Your image should be available in your local environment now.
+
+```bash
+$ docker image ls test-python
+REPOSITORY    TAG       IMAGE ID       CREATED          SIZE
+test-python   latest    39b47fff6145   45 minutes ago   71.1MB
+```
+
+But no container.
+
+```bash
+$ docker ps -a --filter ancestor=test-python:latest
+CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES
+```
+
+<v-click>
+
+Yet!
+
+```bash
+# You can use `docker container run` too (newer syntax)
+$ docker run --name test-python2 test-python:latest
+Hello World
+
+# Or `docker container ps` ...
+$ docker ps -a --filter ancestor=test-python:latest
+CONTAINER ID   IMAGE                COMMAND               CREATED              STATUS                          PORTS     NAMES
+48ec9a91370e   test-python:latest   "python2 script.py"   About a minute ago   Exited (0) About a minute ago             test-python2
+```
+
+</v-click>
 
 ---
 layout: bsc-default
@@ -390,6 +485,234 @@ level: 2
 
 # Volumes and persisting data
 
+The container runs a script with Python 2. This script writes to the stdout
+and to a file on `/tmp/output.txt`.
+
+But what if you wanted to access `output.txt`?
+
+```bash
+$ ls
+Dockerfile  hello.txt
+```
+
+<v-click>
+
+You can use a volume (similar to volumes in VM's like VirtualBox!), and
+map the `/tmp` inside the container to a local directory.
+
+```bash
+$ docker run --rm -ti -v ${PWD}:/tmp test-python:latest
+Hello World
+
+$ ls
+Dockerfile  hello.txt  output.txt
+
+```
+
+</v-click>
+
+---
+layout: bsc-default
+level: 2
+hideInToc: true
+---
+
+# Volumes and persisting data
+
+You can even modify the `hello.txt` file.
+
+```bash
+$ echo "Hola Món" > earth.txt
+# In the host machine, it is `earth.txt`, but mapped as `hello.txt` in the guest.
+$ docker run --rm -ti -v ${PWD}/earth.txt:/app/hello.txt test-python:latest
+Hola Món
+
+```
+
+<br/>
+
+<blockquote style="font-size: 20px">
+
+※ NOTE:  Avoid persisting data inside your container, see best practices slides.
+
+</blockquote>
+
+Organize your container so that users can control input and output
+<br/>
+(imagine your container is a stateless math function)
+
+If a container goes down, for whatever reason, start a new one using the same
+shared volume. You can have multiple containers sharing the same volume, you
+can mount volumes as readonly, and more.
+
+---
+layout: bsc-default
+level: 2
+---
+
+# Networking
+
+Quick example to show how to expose a port in Docker.
+
+You can modify the command (`CMD`) executed by a container.
+
+```bash
+$ docker run --rm -ti test-python:latest python2 -m SimpleHTTPServer
+Serving HTTP on 0.0.0.0 port 8000 ...
+# CTRL + C
+
+# Run is now as a daemon
+$ docker run --rm -d test-python:latest python2 -m SimpleHTTPServer
+cc38293a5265e609d76cd440b95e775175e6da72d03cccc098d8a35483e3878a
+
+# Note the `PORT` column!
+$ docker ps
+CONTAINER ID   IMAGE                COMMAND                  CREATED          STATUS          PORTS     NAMES
+cc38293a5265   test-python:latest   "python2 -m SimpleHT…"   34 seconds ago   Up 33 seconds             nifty_elion
+
+$ docker stop cc38293a5265
+cc38293a5265
+```
+
+---
+layout: bsc-default
+level: 2
+hideInToc: true
+---
+
+# Networking
+
+```bash
+# Specify a port to bind with `-p $HOST:$GUEST`
+$ docker run --rm -d -p 7000:8000 test-python:latest python2 -m SimpleHTTPServer
+34be3a39dc27516805d9698581e34edbc0da6f1f0e7843090cd3218830dd1c88
+
+# Look at `PORT` now!
+$ docker ps
+CONTAINER ID   IMAGE                COMMAND                  CREATED              STATUS              PORTS                                       NAMES
+34be3a39dc27   test-python:latest   "python2 -m SimpleHT…"   About a minute ago   Up About a minute   0.0.0.0:7000->8000/tcp, :::7000->8000/tcp   amazing_chebyshev
+```
+
+<v-click>
+
+<img src="/images/docker-browser.png" style="max-height: 50%; float: right" />
+
+</v-click>
+
+---
+layout: bsc-default
+level: 2
+---
+
+# Creating a Singularity container
+
+You can write a Singularity file, download from Singularity Hub or Docker Hub, or use
+a local Docker image.
+
+```bash
+# The chroot way... you can write to it with --writable
+$ singularity build --sandbox test-python docker-daemon://test-python:latest
+...
+
+# Or build a single container file to be loaded into memory... (what I normally use)
+$ sudo singularity build test-python.sif docker-daemon://test-python:latest
+INFO:    Starting build...
+2023/06/14 18:29:13  info unpack layer: sha256:c1f002e71ff26f48d9071266c88531cc7740de5f12a710395e68ea604ed4ff6a
+2023/06/14 18:29:13  info unpack layer: sha256:7dfeae6c1959458377be7cb43c8d4bba4d64c09f2aa569b9806ef90ffa4bfae8
+2023/06/14 18:29:13  info unpack layer: sha256:eae0303b3277085a9830077a7ff6e679ef772961676015d0418df72ac5de3582
+2023/06/14 18:29:13  info unpack layer: sha256:e1a35eb1d0f6bcf41aef81ad625a2024de331991fc453573b6a4ab644f42aaf7
+2023/06/14 18:29:14  info unpack layer: sha256:cdbb2ced0e763d99157788e6b3b1b04f63f442467a34cbfb35cd7ab6825f70da
+2023/06/14 18:29:14  info unpack layer: sha256:f1cfa610d290fd7eaac1a5f60f8494c9703e042a2240b3b36eafa5e37c3f8ff5
+2023/06/14 18:29:14  info unpack layer: sha256:fe2555b8984cba0a403a87269a257667fddc0f527231de75245d8fe9f2cf3c0d
+INFO:    Creating SIF file...
+INFO:    Build complete: test-python.sif
+```
+
+---
+layout: bsc-default
+level: 2
+hideInToc: true
+---
+
+# Creating a Singularity container
+
+
+The latter command gives you `test-python.sif` file. You can run the container now.
+
+<br/>
+
+```bash
+$ singularity run test-python.sif 
+/usr/local/bin/python2: can't open file 'script.py': [Errno 2] No such file or directory
+```
+
+<br/>
+
+<v-click>
+
+> ※ NOTE: You can convert Docker to Singularity. That does not mean everything will work
+> automatically.
+> Portability requires careful design (other examples: MPI, GPU.)
+
+</v-click>
+
+<br/>
+
+<v-click>
+
+```bash
+$ singularity run --pwd /app test-python.sif
+Hello World
+
+$ singularity shell test-python.sif
+Singularity> 
+```
+
+</v-click>
+
+<v-click>
+
+Singularity will mount your `$HOME` or `$PWD` (depending on the version)
+and use as the working directory. In the default configuration, the system
+default bind points are `$HOME`, `/sys:/sys` , `/proc:/proc`, `/tmp:/tmp`,
+`/var/tmp:/var/tmp`, `/etc/resolv.conf:/etc/resolv.conf`, `/etc/passwd:/etc/passwd`,
+and `$PWD`.
+
+</v-click>
+
+---
+layout: bsc-default
+level: 2
+---
+
+# Testing on the HPC
+
+An exercise for you. Try running this, or another Docker → Singularity container
+on your HPC.
+
+Something like
+
+```bash
+# Upload it to some offline node, for example (or save to a NFS partition to use with computing nodes.)
+bruno@bscearth000:~> scp test-python.sif bsc32...@mn2.bsc.es:/home/bsc32/bsc32..../
+
+# Jump onto that host and load the Singularity module
+bruno@bscearth000:~> ssh bsc32....@mn2.bsc.es
+bsc32....@login2:~> module load Singularity
+
+# Run the container
+bsc32....@login2:~> singularity run --pwd /app test-python.sif
+Hello World
+
+```
+
+That's that! You have a container that you can use on your laptop, in the cloud,
+or in an HPC center. For other solutions that involve MPI or GPU they may not
+be as portable.
+
+But containerization is a useful skill to have in your tool-belt, especially if
+you collaborate with people from external institutions.
+
 ---
 layout: bsc-default
 level: 2
@@ -397,12 +720,35 @@ level: 2
 
 # Deploying containers
 
+- You can deploy images locally (as you have seen in this talk)
+- You can deploy images to Docker Hub or Singularity Hub
+- You can deploy Singularity images to Singularity Registries (they can be installed as modules)
+- You can deploy images to Quay.io
+- You can deploy images to Biocontainers
+- AWS has a registry for containers, as well as Google Cloud, OpenStack
+- You can deploy to Docker Swarm
+- You can deploy images to Kubernetes
+- You can deploy images to GitHub Packages (limitations for free projects apply)
+- …
+
 ---
 layout: bsc-default
 level: 2
 ---
 
 # Container orchestration ({Docker, Singularity} Compose, Kubernetes, …)
+
+Docker Swarm and Kubernetes are example of container orchestration tools.
+
+They provide tools for deploying pods and using containers, and for scaling,
+networking, securing, and maintaining containerized applications.
+
+Docker Compose, and Singularity Compose are tools that also can be used to
+manage clusters of containers. Users can declare how the containers must
+be created and interlinked (networking, volumes). Useful when deploying more
+than 1 container locally or remotely (especially if sharing with others).
+
+There are other tools, some offered by cloud providers like AWS.
 
 ---
 layout: bsc-intro
@@ -418,10 +764,12 @@ hideInToc: true
 
 # Docker development
 
+<div style="font-size: 0.9rem">
+
 1. Keep your images small
     - (For Cloud environments it is important, but for HPC not so much)
     - Use a smaller image for production, but additional debug tooling added for troubleshooting
-    - Use [multistage builds](https://docs.docker.com/build/building/multi-stage/) and leverage the [build cache](https://docs.docker.com/develop/develop-images/dockerfile_best-practices/#leverage-build-cache)
+    - Use [multistage builds](https://docs.docker.com/build/building/multi-stage/) (※ [^1]!) and leverage the [build cache](https://docs.docker.com/develop/develop-images/dockerfile_best-practices/#leverage-build-cache)
     - Use `docker image history $image` to view the layers in your image
 2. Use official images where possible
 3. Create **ephemeral containers**
@@ -434,6 +782,12 @@ hideInToc: true
 9. Declare network ports used in `EXPOSE`
 10. Expose environment variables for the software with `ENV`
 11. `COPY` is preferred over `ADD` whenever possible
+12. Portability and reproducibility are hard. Test it! (Developing containers is software development!)
+
+</div>
+
+[^1]: This is omitted from the current version of this presentation, but it is an important
+Docker concept.
 
 <!--
 COPY requirements.txt /tmp/
@@ -467,7 +821,13 @@ These slides are based on (links with underscore):
 - [Best practices for building and running Docker and Singularity containers](https://www.admin-magazine.com/mobile/HPC/Articles/More-Best-Practices-for-HPC-Containers)
 
 ---
+layout: bsc-thank-you
+slides-email: bruno.depaulakinoshita
+---
+
+---
 layout: bsc-default
+hideInToc: true
 ---
 
 # Security
@@ -477,8 +837,58 @@ layout: bsc-default
 - Use [secrets](https://docs.docker.com/engine/swarm/secrets/) to store sensitive application data
 - If you are using a `:latest` base image, rebuild your image to get the latest updates
 - Use security scanning tools to check your image for vulnerabilities
+- WIP, more to come!
 
 ---
-layout: bsc-thank-you
-slides-email: bruno.depaulakinoshita
+layout: bsc-default
+hideInToc: true
 ---
+
+# Singularity and Docker
+
+Pro Singularity
+
+- Singularity has a single file, simplified I/O
+- Simplified security model, more compatible with HPC
+- Easier to work with Slurm (Docker has a daemon )
+
+Con Singularity
+
+- Docker has a wider user/knowledge base
+- Docker is used by many types of software developers
+- Docker has more containers ready-to-use
+
+Other possible issues
+
+- Singularity had a big rewrite from C to Go
+- Singularity modified its file format (OCI should change it)
+- Singularity, Singularity CE & Apptainer
+
+Most HPC centers have their own set of instructions for users
+to use Singularity, e.g. [Running MPI apps on Singularity at BSC MN4](https://www.bsc.es/supportkc/blog/)
+
+---
+layout: bsc-default
+hideInToc: true
+---
+
+# HPC Examples
+
+- hzdr.de recipe for Slurm in Docker <https://codebase.helmholtz.cloud/fwcc/slurm-in-docker>
+- Sweden's PDC center for HPC instructions on using Singularity <https://www.pdc.kth.se/support/documents/software/singularity.html>
+- NeSI (New Zealand) Knowledge Base entry on using Singularity <https://support.nesi.org.nz/hc/en-gb/articles/360001107916-Singularity>
+- NCAR recipes for WRF with Docker <https://github.com/NCAR/WRF_DOCKER> & <https://github.com/NCAR/container-wrf>
+- Singularity docs for MPI <https://docs.sylabs.io/guides/latest/user-guide/mpi.html>
+- Auburn HPC docs about MPI and Slurm with Singularity <https://hpc.auburn.edu/hpc/docs/hpcdocs/build/html/easley/containers.html#parallel-mpi-code>
+
+---
+layout: bsc-default
+hideInToc: true
+---
+
+# Workflow Managers
+
+- cwltool, reference CWL runner, uses containers (docker/udocker/podman/singularity) to isolate tasks (Cylc does so without containers)
+- Snakemake supports Docker and singularity too
+- Workflow Managers normally support Docker, and then add support to Singularity later. Science/Research Workflow Managers may be an exception to this rule.
+- In some workflow managers users must decide if, and how to use containers (e.g. Autosubmit, Cylc, ecFlow)
