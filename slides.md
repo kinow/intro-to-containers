@@ -877,6 +877,9 @@ hideInToc: true
 - NCAR recipes for WRF with Docker <https://github.com/NCAR/WRF_DOCKER> & <https://github.com/NCAR/container-wrf>
 - Singularity docs for MPI <https://docs.sylabs.io/guides/latest/user-guide/mpi.html>
 - Auburn HPC docs about MPI and Slurm with Singularity <https://hpc.auburn.edu/hpc/docs/hpcdocs/build/html/easley/containers.html#parallel-mpi-code>
+- Pawsey repository with container recipes (conda, mpi, OpenFoam, etc.) <https://github.com/PawseySC/pawsey-containers/tree/master>
+- IFCA (ES) Docker containers for Distributed Training of Deep Learning Algorithms in HPC Clusters <https://github.com/IFCA/workflow-DL-HPC/>
+- CANOPIE-HPC 2023 <https://canopie-hpc.org/cfp/>
 
 ---
 layout: bsc-default
