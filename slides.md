@@ -9,7 +9,7 @@ drawings:
   persist: false
 transition: slide-left
 title: Intro to Containers
-layout: bsc-title
+layout: de-title
 venue: Online
 date: 'yes'
 hideInToc: true
@@ -19,12 +19,13 @@ fonts:
 slides-title: Intro to Containers
 slides-date: '15/06/2023'
 slides-venue: 'BSC-CES - MWT'
+slides-author: 'Bruno P. Kinoshita'
 ---
 
 # Intro to Containers
 
 ---
-layout: bsc-default
+layout: de-default
 hideInToc: true
 ---
 
@@ -43,23 +44,23 @@ BSC Website: https://www.bsc.es/<br /></p>
 </div>
 
 ---
-layout: bsc-default
+layout: de-default
 hideInToc: true
 ---
 
 # Agenda
 
-<Toc :maxDepth="2" />
+<Toc :maxDepth="2"></Toc>
 
 ---
-layout: bsc-intro
+layout: de-intro
 hideInToc: true
 ---
 
 # Containerization
 
 ---
-layout: bsc-default
+layout: de-default
 ---
 
 ## Prerequisites
@@ -81,7 +82,7 @@ If you would like to try the examples in these slides, you will need to:
 > image_name:version` before the presentation begins.
 
 ---
-layout: bsc-default
+layout: de-default
 ---
 
 # Containerization
@@ -97,7 +98,7 @@ This talk is about **containerization at OS level**, more specifically about con
 [^1]: [Trend Micro (2022). The Difference Between Virtual Machines and Containers](https://www.trendmicro.com/zh_hk/devops/22/e/the-difference-between-virtual-machines-and-containers.html)
 
 ---
-layout: bsc-default
+layout: de-default
 level: 2
 ---
 
@@ -144,7 +145,7 @@ Refs: [^1][^2][^3]
 [^3]:  https://github.com/opencontainers/runc
 
 ---
-layout: bsc-default
+layout: de-default
 level: 2
 ---
 
@@ -168,24 +169,22 @@ level: 2
 [^3]: [Application platform considerations for sustainable workloads on Azure](https://learn.microsoft.com/en-us/azure/well-architected/sustainability/sustainability-application-platform#containerize-workloads-where-applicable)
 
 ---
-layout: bsc-default
+layout: de-default
 level: 2
 ---
 
 Refs: [^1][^2] (networking plays an important role, valid for cloud, HPC may have different numbers.)
 
-<div style="max-height: 80%;">
-<div style="display: grid; grid-template: 100% / 50% 50%;">
-<img src="/images/container-vm-footprint.png" style="height: 80%">
-<img src="/images/container-vm-footprint2.png" style="float:right; height: 80%">
-</div>
+<div style="display: grid; grid-template: 40% / 50% 50%; max-height: 85%;">
+<img src="/images/container-vm-footprint.png" alt="Container footprint image 1">
+<img src="/images/container-vm-footprint2.png" style="max-height: inherit;" alt="Container footprint image 2">
 </div>
 
-[^1]: [G. Anusooya Vijayakumar Varadarajan (2021), Reduced carbon emission and optimized power consumption technique using container over virtual machine](https://www.researchgate.net/figure/Comparative-results-of-4-containers-vs-1-VM-Table9_fig4_333096446)
+[^1]: [G. Anusooya Vijayakumar Varadarajan (2021), Reduced carbon emission and (…) using container over virtual machine](https://www.researchgate.net/figure/Comparative-results-of-4-containers-vs-1-VM-Table9_fig4_333096446)
 [^2]: [Roberto Morabito (2015), Power Consumption of Virtualization Technologies: an Empirical Investigation](https://arxiv.org/abs/1511.01232)
 
 ---
-layout: bsc-intro
+layout: de-intro
 level: 2
 hideInToc: true
 ---
@@ -193,7 +192,7 @@ hideInToc: true
 # Demo (follow along!)
 
 ---
-layout: bsc-default
+layout: de-default
 level: 2
 ---
 
@@ -222,13 +221,12 @@ $ docker run -ti python:2.7.18-alpine3.11 /bin/ash
 / # 
 
 # Execute some Python 2 code with an environment variable
-$ docker run -ti -e WORLD=Earth python:2.7.18-alpine3.11 python2 -c \
-  'import os; print "Hello " + os.environ["WORLD"]'
+$ docker run -ti -e WORLD=Earth python:2.7.18-alpine3.11 python2 -c 'import os; print "Hello " + os.environ["WORLD"]'
 Hello Earth
 ```
 
 ---
-layout: bsc-default
+layout: de-default
 level: 2
 hideInToc: true
 ---
@@ -260,7 +258,7 @@ Build Cache     0         0         0B        0B
 ```
 
 ---
-layout: bsc-default
+layout: de-default
 level: 2
 hideInToc: true
 ---
@@ -293,7 +291,7 @@ $ docker volume list
 ```
 
 ---
-layout: bsc-default
+layout: de-default
 level: 2
 hideInToc: true
 ---
@@ -324,7 +322,7 @@ Total reclaimed space: 3.189GB
 </v-click>
 
 ---
-layout: bsc-default
+layout: de-default
 level: 2
 hideInToc: true
 ---
@@ -341,7 +339,7 @@ $ docker run -d --rm --name python2test python:2.7.18-alpine3.11
 ```
 
 ---
-layout: bsc-default
+layout: de-default
 level: 2
 ---
 
@@ -374,7 +372,7 @@ CMD ["python2", "script.py"]
 performance.
 
 ---
-layout: bsc-default
+layout: de-default
 level: 2
 hideInToc: true
 ---
@@ -404,7 +402,7 @@ $ docker build -t test-python:latest .
 ```
 
 ---
-layout: bsc-default
+layout: de-default
 level: 2
 hideInToc: true
 ---
@@ -412,8 +410,6 @@ hideInToc: true
 # Creating images with Dockerfile
 
 What if you run that command again?
-
-Look at the lines that contain `CACHED`!
 
 ```bash
 $ docker build -t test-python:latest .
@@ -435,8 +431,14 @@ $ docker build -t test-python:latest .
 => => naming to docker.io/library/test-python:latest                      0.0s
 ```
 
+<v-click>
+
+Look at the lines that contain `CACHED`!
+
+</v-click>
+
 ---
-layout: bsc-default
+layout: de-default
 level: 2
 hideInToc: true
 ---
@@ -476,7 +478,7 @@ CONTAINER ID   IMAGE                COMMAND               CREATED              S
 </v-click>
 
 ---
-layout: bsc-default
+layout: de-default
 level: 2
 ---
 
@@ -509,7 +511,7 @@ Dockerfile  hello.txt  output.txt
 </v-click>
 
 ---
-layout: bsc-default
+layout: de-default
 level: 2
 hideInToc: true
 ---
@@ -543,7 +545,7 @@ shared volume. You can have multiple containers sharing the same volume, you
 can mount volumes as readonly, and more.
 
 ---
-layout: bsc-default
+layout: de-default
 level: 2
 ---
 
@@ -572,7 +574,7 @@ cc38293a5265
 ```
 
 ---
-layout: bsc-default
+layout: de-default
 level: 2
 hideInToc: true
 ---
@@ -592,12 +594,12 @@ CONTAINER ID   IMAGE                COMMAND                  CREATED            
 
 <v-click>
 
-<img src="/images/docker-browser.png" style="max-height: 50%; float: right" />
+<img src="/images/docker-browser.png" style="max-height: 50%; float: right"  alt="Docker in a browser window"/>
 
 </v-click>
 
 ---
-layout: bsc-default
+layout: de-default
 level: 2
 ---
 
@@ -626,7 +628,7 @@ INFO:    Build complete: test-python.sif
 ```
 
 ---
-layout: bsc-default
+layout: de-default
 level: 2
 hideInToc: true
 ---
@@ -678,7 +680,7 @@ and `$PWD`.
 </v-click>
 
 ---
-layout: bsc-default
+layout: de-default
 level: 2
 ---
 
@@ -711,7 +713,7 @@ But containerization is a useful skill to have in your tool-belt, especially if
 you collaborate with people from external institutions.
 
 ---
-layout: bsc-default
+layout: de-default
 level: 2
 ---
 
@@ -729,7 +731,7 @@ level: 2
 - …
 
 ---
-layout: bsc-default
+layout: de-default
 level: 2
 ---
 
@@ -748,13 +750,13 @@ than 1 container locally or remotely (especially if sharing with others).
 There are other tools, some offered by cloud providers like AWS.
 
 ---
-layout: bsc-intro
+layout: de-intro
 ---
 
 # Best practices
 
 ---
-layout: bsc-default
+layout: de-default
 level: 3
 hideInToc: true
 ---
@@ -801,7 +803,7 @@ Since COPYing new files will invalidate the RUN pip layer.
 -->
 
 ---
-layout: bsc-default
+layout: de-default
 level: 2
 hideInToc: true
 ---
@@ -818,12 +820,12 @@ These slides are based on (links with underscore):
 - [Best practices for building and running Docker and Singularity containers](https://www.admin-magazine.com/mobile/HPC/Articles/More-Best-Practices-for-HPC-Containers)
 
 ---
-layout: bsc-thank-you
+layout: de-thank-you
 slides-email: bruno.depaulakinoshita
 ---
 
 ---
-layout: bsc-default
+layout: de-default
 hideInToc: true
 ---
 
@@ -837,7 +839,7 @@ hideInToc: true
 - WIP, more to come!
 
 ---
-layout: bsc-default
+layout: de-default
 hideInToc: true
 ---
 
@@ -865,7 +867,7 @@ Most HPC centers have their own set of instructions for users
 to use Singularity, e.g. [Running MPI apps on Singularity at BSC MN4](https://www.bsc.es/supportkc/blog/)
 
 ---
-layout: bsc-default
+layout: de-default
 hideInToc: true
 ---
 
@@ -882,7 +884,7 @@ hideInToc: true
 - CANOPIE-HPC 2023 <https://canopie-hpc.org/cfp/>
 
 ---
-layout: bsc-default
+layout: de-default
 hideInToc: true
 ---
 
@@ -894,7 +896,7 @@ hideInToc: true
 - In some workflow managers users must decide if, and how to use containers (e.g. Autosubmit, Cylc, ecFlow)
 
 ---
-layout: bsc-default
+layout: de-default
 hideInToc: true
 ---
 
