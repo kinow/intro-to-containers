@@ -889,3 +889,14 @@ hideInToc: true
 - Snakemake supports Docker and singularity too
 - Workflow Managers normally support Docker, and then add support to Singularity later. Science/Research Workflow Managers may be an exception to this rule.
 - In some workflow managers users must decide if, and how to use containers (e.g. Autosubmit, Cylc, ecFlow)
+
+---
+layout: bsc-default
+hideInToc: true
+---
+
+# Other
+
+- https://container-in-hpc.org/ (they have a Slack channel too)
+- #containers channel in Slack/Mattermost/etc.
+- 
