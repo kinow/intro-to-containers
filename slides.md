@@ -110,10 +110,6 @@ quite some years (`chroot`, and Linux namespaces such as `cgroups`).
 Containers did not start with Docker, but Docker was responsible for
 its recent widespread use in software development.
 
-<!-- Namespaces are a feature of the Linux kernel that partitions kernel
-resources such that one set of processes sees one set of resources while
-another set of processes sees a different set of resources. -->
-
 Refs: [^1][^2][^3]
 
 <div style="font-size: 0.8rem;">
@@ -135,14 +131,18 @@ Refs: [^1][^2][^3]
 </div>
 
 
-<!--
-  - The first hypervisor providing full virtualization appeared in January 1967 - IBM
-    https://en.wikipedia.org/wiki/Hypervisor#Mainframe_origins
--->
-
 [^1]: https://blog.aquasec.com/a-brief-history-of-containers-from-1970s-chroot-to-docker-2016
 [^2]:  https://en.wikipedia.org/wiki/Linux_namespaces
 [^3]:  https://github.com/opencontainers/runc
+
+<!--
+Namespaces are a feature of the Linux kernel that partitions kernel
+resources such that one set of processes sees one set of resources while
+another set of processes sees a different set of resources. 
+
+The first hypervisor providing full virtualization appeared in January 1967 - IBM
+https://en.wikipedia.org/wiki/Hypervisor#Mainframe_origins
+-->
 
 ---
 layout: de-default

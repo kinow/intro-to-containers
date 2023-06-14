@@ -16,7 +16,7 @@
   background-size: 100px;
   background-repeat: no-repeat;
   background-position-x: 3.5rem;
-  background-position-y: bottom 1.5%;
+  background-position-y: bottom;
   display: grid;
   grid-template: 10% 90% / 100%;
   height: 90%;

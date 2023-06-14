@@ -11,9 +11,11 @@ h1, h2, h3, h4, h5, h6 {
   margin-left: 200px;
   color: gray;
   font-size: 0.75em;
+  background-color: transparent;
 }
 
 .footnote-item > p {
   margin: 0;
   padding: 0;
+  background-color: transparent;
 }

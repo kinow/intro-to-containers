@@ -1,6 +1,6 @@
 <template>
   <div class="de-title">
-    <div class="slidev-layout cover my-title">
+    <div class="slidev-layout my-title">
       <div class="title">
         <h1>Destination<br/>Earth</h1>
         <h2>{{ props.slidesTitle }}</h2>
@@ -24,29 +24,39 @@ const props = defineProps({
 
 <style>
 .de-title {
-  max-height: 97.5%;
+  display: flex;
+  flex-direction: column;
+}
+
+.de-title > div {
+  display: flex;
+  flex-direction: row;
+  flex-grow: 1;
+  flex-basis: available;
+}
+
+.de-title > footer {
+  display: flex;
+  flex-direction: row;
+  flex-grow: 0;
+  flex-shrink: 1;
+  flex-basis: 100px;
 }
 
 .de-title > .my-title {
   background-image: url('/images/de-title.png');
   background-size: contain;
   background-repeat: no-repeat;
-  max-height: 90%;
-  left: 5%;
-  position: relative;
-  display: grid;
-  grid-template: 90% 10% / 50% 50%;
+  background-position-x: center;
+  min-height: 90%;
 }
 
 .de-title > .my-title > .title {
   text-align: left;
-  font-weight: bold;
   font-size: 5rem !important;
-  grid-row: 1;
-  grid-column: 2;
-  align-items: center;
-  align-content: center;
   margin: auto 0;
+  width: 100%;
+  text-align: right;
 }
 
 .de-title > .my-title > .title > h1 {
