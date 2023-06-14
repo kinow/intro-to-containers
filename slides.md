@@ -332,15 +332,12 @@ hideInToc: true
 # More useful commands
 
 ```bash
-# Run a container that will auto-delete itself when its process exists
+# Run a container that will auto-delete itself when its process exits
 $ docker run --rm python:2.7.18-alpine3.11
 
 # Run a container with a name, as a daemon (in the background)
 $ docker run -d --rm --name python2test python:2.7.18-alpine3.11
 27909a75647fbd8bb700fcdc2e25019958a8d0ecda74227a1f74793e8caf4cab
-...
-Total reclaimed space: 3.189GB
-
 ```
 
 ---
@@ -707,7 +704,7 @@ Hello World
 ```
 
 That's that! You have a container that you can use on your laptop, in the cloud,
-or in an HPC center. For other solutions that involve MPI or GPU they may not
+or in an HPC. For other solutions that involve MPI or GPU they may not
 be as portable.
 
 But containerization is a useful skill to have in your tool-belt, especially if
