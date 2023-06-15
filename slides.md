@@ -1,7 +1,7 @@
 ---
 theme: default
 class: text-center
-highlighter: shiki
+highlighter: prism
 lineNumbers: false
 info: |
   Presentation from the BSC about Containers.
@@ -191,6 +191,10 @@ hideInToc: true
 
 # Demo (follow along!)
 
+<!--
+Ask how many are following the demo.
+-->
+
 ---
 layout: de-default
 level: 2
@@ -289,6 +293,10 @@ $ docker volume list
 ...
 ```
 
+<!--
+You don't need to try all these commands. The slides are available.
+-->
+
 ---
 layout: de-default
 level: 2
@@ -320,6 +328,10 @@ Total reclaimed space: 3.189GB
 
 </v-click>
 
+<!--
+No need to try.
+-->
+
 ---
 layout: de-default
 level: 2
@@ -336,6 +348,10 @@ $ docker run --rm python:2.7.18-alpine3.11
 $ docker run -d --rm --name python2test python:2.7.18-alpine3.11
 27909a75647fbd8bb700fcdc2e25019958a8d0ecda74227a1f74793e8caf4cab
 ```
+
+<!--
+If you keep running commands, you will only get more containers...
+-->
 
 ---
 layout: de-default
@@ -370,6 +386,10 @@ CMD ["python2", "script.py"]
 `RUN`, `ADD`, and `COPY` create new layers. Layers are cached for
 performance.
 
+<!--
+Paste this into the chat.
+-->
+
 ---
 layout: de-default
 level: 2
@@ -378,7 +398,7 @@ hideInToc: true
 
 # Creating images with Dockerfile
 
-```bash
+```bash 
 $ echo "Hello World" > hello.txt
 # The dot at the end is for the local dir, where Dockerfile is
 $ docker build -t test-python:latest .
@@ -400,6 +420,10 @@ $ docker build -t test-python:latest .
  => => naming to docker.io/library/test-python:latest                      0.0s
 ```
 
+<!--
+Remember to show that layers are cached.
+-->
+
 ---
 layout: de-default
 level: 2
@@ -410,7 +434,7 @@ hideInToc: true
 
 What if you run that command again?
 
-```bash
+```bash {11,12,13}
 $ docker build -t test-python:latest .
 [+] Building 0.1s (9/9) FINISHED                                                
 => [internal] load build definition from Dockerfile                       0.0s
@@ -429,12 +453,6 @@ $ docker build -t test-python:latest .
 => => writing image sha256:de797699e542f0fd08cd4321d434754334df8399d5b3c  0.0s
 => => naming to docker.io/library/test-python:latest                      0.0s
 ```
-
-<v-click>
-
-Look at the lines that contain `CACHED`!
-
-</v-click>
 
 ---
 layout: de-default
@@ -509,6 +527,10 @@ Dockerfile  hello.txt  output.txt
 
 </v-click>
 
+<!--
+Any questions?
+-->
+
 ---
 layout: de-default
 level: 2
@@ -572,6 +594,10 @@ $ docker stop cc38293a5265
 cc38293a5265
 ```
 
+<!--
+You do not need to run all these commands.
+-->
+
 ---
 layout: de-default
 level: 2
@@ -596,6 +622,10 @@ CONTAINER ID   IMAGE                COMMAND                  CREATED            
 <img src="/images/docker-browser.png" style="max-height: 50%; float: right"  alt="Docker in a browser window"/>
 
 </v-click>
+
+<!--
+Copy the command at the top to the chat.
+-->
 
 ---
 layout: de-default
@@ -903,4 +933,4 @@ hideInToc: true
 
 - https://container-in-hpc.org/ (they have a Slack channel too)
 - #containers channel in Slack/Mattermost/etc.
-- 
+-
