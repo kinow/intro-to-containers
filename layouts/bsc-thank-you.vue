@@ -18,6 +18,10 @@ const props = defineProps({
 </script>
 
 <style>
+.bsc-thankyou {
+  height: 100%;
+}
+
 .bsc-thankyou > .my-title {
   background-image: url('/images/bsc-bg3.jpg');
   background-size: cover;

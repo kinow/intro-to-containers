@@ -10,11 +10,13 @@
 .bsc-intro {
   background-image: url('/images/bsc-bg2.jpg');
   background-size: cover;
+  height: 100%;
 }
 
 .bsc-intro .intro {
   display: flex !important;
   justify-content: flex-start;
+  height: 100%;
 }
 
 .bsc-intro .intro h1 {
