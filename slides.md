@@ -201,14 +201,6 @@ level: 2
 Try these commands!
 
 ```bash
-# Run a terminal in Debian Bullseye slim image with Micromamba
-$ docker run -ti -u 1000:1000 mambaorg/micromamba:bullseye-slim
-(base) mambauser@5df690afaa1d:/tmp$
-
-# Run a terminal in the latest Ubuntu release
-$ docker run -ti ubuntu:latest
-root@51a769cec6c0:/#
-
 # Run an old version of Linux Alpine 2.7.18 Python 2.7.3
 $ docker run -ti python:2.7.18-alpine3.11
 Python 2.7.18 (default, Apr 20 2020, 19:51:05) 
@@ -223,6 +215,13 @@ $ docker run -ti python:2.7.18-alpine3.11 /bin/ash
 # Execute some Python 2 code with an environment variable
 $ docker run -ti -e WORLD=Earth python:2.7.18-alpine3.11 python2 -c 'import os; print "Hello " + os.environ["WORLD"]'
 Hello Earth
+```
+
+You can try other images.
+
+```bash
+$ docker run -ti -u 1000:1000 mambaorg/micromamba:bullseye-slim
+$ docker run -ti ubuntu:latest /bin/bash
 ```
 
 ---
