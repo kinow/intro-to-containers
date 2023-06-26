@@ -881,6 +881,20 @@ hideInToc: true
 - IFCA (ES) Docker containers for Distributed Training of Deep Learning Algorithms in HPC Clusters <https://github.com/IFCA/workflow-DL-HPC/>
 - CANOPIE-HPC 2023 <https://canopie-hpc.org/cfp/>
 
+<!--
+https://www.osti.gov/biblio/1643320
+https://www.osti.gov/biblio/1483132
+https://researchcomputing.princeton.edu/support/knowledge-base/singularity
+https://waterprogramming.wordpress.com/2022/05/25/containerizing-your-code-for-hpc-docker-singularity/
+https://pawseysc.github.io/containers-astro-python-workshop/3.hpc/index.html
+https://www.daaam.info/Downloads/Pdfs/proceedings/proceedings_2021/011.pdf
+https://ieeexplore.ieee.org/document/8820966
+https://deep-hybrid-datacloud.eu/wp-content/uploads/sites/2/2020/04/ContainerBasedVirtualization.pdf
+https://upcommons.upc.edu/bitstream/handle/2117/335295/153045.pdf?sequence=1
+https://ieeexplore.ieee.org/xpl/conhome/8949328/proceeding
+
+-->
+
 ---
 layout: bsc-default
 hideInToc: true
